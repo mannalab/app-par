@@ -1,0 +1,55 @@
+name: BeraPAR
+description: Preenchimento de protocolos de monitoramento de riachos.
+publish_to: none
+version: 3.0.1+1
+environment:
+  sdk: '>=2.7.0 <3.0.0'
+dependencies:
+  font_awesome_flutter: ^8.10.0
+  flutter_login: ^1.0.14
+  convex_bottom_bar: ^2.6.0
+  flutter_map: ^0.10.1+1
+  flutter_fab_dialer: ^0.1.1
+  redux: ^4.0.0+3
+  flutter_redux: ^0.7.0
+  flutter_form_builder: ^3.13.0
+  intl: ^0.16.1
+  http: ^0.12.2
+  shared_preferences: ^0.5.12+4
+  geolocator: ^6.1.14
+  archive: ^2.0.13
+  path_provider: ^1.6.27
+  wave_progress_widget: ^0.0.1
+  progress_state_button: ^1.0.2
+  flutter_styled_toast: ^1.4.0+1
+  grouped_buttons: ^1.0.4
+  autocomplete_textfield: ^1.7.3
+  carousel_slider: ^2.3.0
+  flutter_html: ^0.8.2 
+  flutter_spinkit: "^4.1.2"
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.3
+  camera: ^0.5.7+2
+  csv: ^4.0.1
+  youtube_player_flutter: ^7.0.0+7
+  share:
+    git:
+      url: git://github.com/himanshusharma89/plugins.git
+      path: packages/share
+dev_dependencies:
+  flutter_launcher_icons: "^0.8.1"
+  flutter_test:
+    sdk: flutter
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+flutter:
+  uses-material-design: true
+  assets:
+  - assets/
+  - assets/tiles/
+  - assets/images/
+  - assets/images/background.png
+  - assets/images/logo.png
