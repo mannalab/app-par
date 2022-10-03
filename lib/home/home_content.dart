@@ -14,7 +14,6 @@ class _HomeContentState extends State<HomeContent> {
     // String token = await storage.read(key: 'token');
     final SharedPreferences prefs = await _prefs;
     String token = prefs.getString('token');
-    print("AQUUIIII $token");
   }
 
   void initState() {

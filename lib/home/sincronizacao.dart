@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:BeraPAR/home/VerFormularioBasaltoPage.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -11,7 +13,9 @@ import 'package:BeraPAR/store/actions/map_actions.dart';
 import 'package:BeraPAR/store/models/map_model.dart';
 import 'package:BeraPAR/home/VerFormularioPage.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:progress_state_button/iconed_button.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:progress_state_button/progress_button.dart';
 import 'package:http/http.dart' as http;
@@ -420,6 +424,136 @@ class _SincronizacaoState extends State<Sincronizacao> {
     refreshPARsRedux();
   }
 
+  void exportPARs(pars) async {
+    List<List<dynamic>> linhas = [];
+    List<dynamic> cabecalho = [];
+    cabecalho.add('id');
+    cabecalho.add('local de coleta');
+    cabecalho.add('latitude e longitude');
+    cabecalho.add('tempo');
+    cabecalho.add('choveu');
+    cabecalho.add('dataHora');
+    cabecalho.add('parametro1');
+    cabecalho.add('parametro2');
+    cabecalho.add('parametro3');
+    cabecalho.add('parametro4');
+    cabecalho.add('parametro5a');
+    cabecalho.add('parametro5b');
+    cabecalho.add('parametro6');
+    cabecalho.add('parametro7me');
+    cabecalho.add('parametro7md');
+    cabecalho.add('parametro8me');
+    cabecalho.add('parametro8md');
+    cabecalho.add('parametro9me');
+    cabecalho.add('parametro9md');
+    cabecalho.add('soma');
+    cabecalho.add('observacoes');
+    linhas.add(cabecalho);
+    for (var i = 0; i < pars.length; i++) {
+      List<dynamic> par = [];
+      par.add(pars[i]['id']);
+      par.add(pars[i]['local']['nome']);
+      par.add(
+          '${pars[i]["local"]["latitude"]},${pars[i]["local"]["longitude"]}');
+      par.add(pars[i]['tempo']);
+      par.add(pars[i]['choveu']);
+      par.add(pars[i]['dataHora']);
+      par.add(pars[i]['parametro1']);
+      par.add(pars[i]['parametro2']);
+      par.add(pars[i]['parametro3']);
+      par.add(pars[i]['parametro4']);
+      par.add(pars[i]['parametro5a']);
+      par.add(pars[i]['parametro5b']);
+      par.add(pars[i]['parametro6']);
+      par.add(pars[i]['parametro7me']);
+      par.add(pars[i]['parametro7md']);
+      par.add(pars[i]['parametro8me']);
+      par.add(pars[i]['parametro8md']);
+      par.add(pars[i]['parametro9me']);
+      par.add(pars[i]['parametro9md']);
+      par.add(pars[i]['soma']);
+      par.add(pars[i]['observacoes']);
+      linhas.add(par);
+      print(
+          "PAR #${pars[i]['id']}; Local da coleta: ${pars[i]['local']['nome']}; Latitude e Longitude: ${pars[i]['local']['latitude']}, ${pars[i]['local']['longitude']}; Descrição: ${pars[i]['local']['descricao']}; Data da coleta: ${pars[i]['dataHora']}; Avaliador: ${pars[i]['nomeAvaliador']}; Tempo: ${pars[i]['tempo']}, Choveu?: ${pars[i]['choveu']};");
+    }
+
+    String csvData = ListToCsvConverter().convert(linhas);
+    final String directory = (await getApplicationSupportDirectory()).path;
+    final path = "$directory/csv-${DateTime.now()}.csv";
+    print(path);
+    final File file = File(path);
+    await file.writeAsString(csvData);
+
+    Share.shareFile(file);
+  }
+
+  void exportPARsBasalto(pars) async {
+    List<List<dynamic>> linhas = [];
+    List<dynamic> cabecalho = [];
+    cabecalho.add('id');
+    cabecalho.add('local de coleta');
+    cabecalho.add('latitude e longitude');
+    cabecalho.add('tempo');
+    cabecalho.add('choveu');
+    cabecalho.add('dataHora');
+    cabecalho.add('parametro1');
+    cabecalho.add('parametro2');
+    cabecalho.add('parametro3me');
+    cabecalho.add('parametro3md');
+    cabecalho.add('parametro4me');
+    cabecalho.add('parametro4md');
+    cabecalho.add('parametro5');
+    cabecalho.add('parametro6');
+    cabecalho.add('parametro7');
+    cabecalho.add('parametro8');
+    cabecalho.add('parametro9');
+    cabecalho.add('parametro10');
+    cabecalho.add('parametro11');
+    cabecalho.add('parametro12');
+    cabecalho.add('soma');
+    cabecalho.add('observacoes');
+    linhas.add(cabecalho);
+    for (var i = 0; i < pars.length; i++) {
+      List<dynamic> par = [];
+      par.add(pars[i]['id']);
+      par.add(pars[i]['local']['nome']);
+      par.add(
+          '${pars[i]["local"]["latitude"]},${pars[i]["local"]["longitude"]}');
+      par.add(pars[i]['tempo']);
+      par.add(pars[i]['choveu']);
+      par.add(pars[i]['dataHora']);
+      par.add(pars[i]['parametro1']);
+      par.add(pars[i]['parametro2']);
+      par.add(pars[i]['parametro3me']);
+      par.add(pars[i]['parametro3md']);
+      par.add(pars[i]['parametro4me']);
+      par.add(pars[i]['parametro4md']);
+      par.add(pars[i]['parametro5']);
+      par.add(pars[i]['parametro6']);
+      par.add(pars[i]['parametro7']);
+      par.add(pars[i]['parametro8']);
+      par.add(pars[i]['parametro9']);
+      par.add(pars[i]['parametro10']);
+      par.add(pars[i]['parametro11']);
+      par.add(pars[i]['parametro12']);
+      par.add(pars[i]['soma']);
+      par.add(pars[i]['observacoes']);
+      linhas.add(par);
+      print(
+          "PAR #${pars[i]['id']}; Local da coleta: ${pars[i]['local']['nome']}; Latitude e Longitude: ${pars[i]['local']['latitude']}, ${pars[i]['local']['longitude']}; Descrição: ${pars[i]['local']['descricao']}; Data da coleta: ${pars[i]['dataHora']}; Avaliador: ${pars[i]['nomeAvaliador']}; Tempo: ${pars[i]['tempo']}, Choveu?: ${pars[i]['choveu']};");
+    }
+
+    String csvData = ListToCsvConverter().convert(linhas);
+    final String directory = (await getApplicationSupportDirectory()).path;
+    final path = "$directory/csv-${DateTime.now()}.csv";
+    print(path);
+    final File file = File(path);
+    await file.writeAsString(csvData);
+
+    Share.shareFile(file);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -651,150 +785,181 @@ class _SincronizacaoState extends State<Sincronizacao> {
                             height: MediaQuery.of(context).size.height,
                             child: TabBarView(children: [
                               Container(
-                                child: (state.pars != null &&
-                                        state.pars.length > 0)
-                                    ? DataTable(
-                                        columnSpacing: 10,
-                                        columns: [
-                                          // DataColumn(label: Text("#")),
-                                          DataColumn(label: Text("Local")),
-                                          DataColumn(label: Text("Data")),
-                                          DataColumn(label: Text("Soma")),
-                                          DataColumn(label: Text("")),
-                                        ],
-                                        rows: state.pars != null
-                                            ? state.pars
-                                                .map((par) => DataRow(
-                                                      cells: [
-                                                        // DataCell(Text(par['id'].toString())),
-                                                        DataCell(Text(
-                                                            par['local']
-                                                                ['nome'])),
-                                                        DataCell(Text(new DateFormat(
-                                                                "dd/MM/yyyy")
-                                                            .format(DateTime
-                                                                .parse(par[
-                                                                    'dataHora']))
-                                                            .toString())),
-                                                        DataCell(Container(
-                                                            width: 25,
-                                                            child: Text(par[
-                                                                    'soma']
-                                                                .toString()))),
-                                                        DataCell(
-                                                          Container(
+                                child: Column(children: <Widget>[
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        exportPARs(state.pars);
+                                      },
+                                      child: Text("Exportar Todos",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
+                                  ),
+                                  (state.pars != null && state.pars.length > 0)
+                                      ? DataTable(
+                                          columnSpacing: 10,
+                                          columns: [
+                                            // DataColumn(label: Text("#")),
+                                            DataColumn(label: Text("Local")),
+                                            DataColumn(label: Text("Data")),
+                                            DataColumn(label: Text("Soma")),
+                                            DataColumn(label: Text("")),
+                                          ],
+                                          rows: state.pars != null
+                                              ? state.pars
+                                                  .map((par) => DataRow(
+                                                        cells: [
+                                                          // DataCell(Text(par['id'].toString())),
+                                                          DataCell(Text(
+                                                              par['local']
+                                                                  ['nome'])),
+                                                          DataCell(Text(new DateFormat(
+                                                                  "dd/MM/yyyy")
+                                                              .format(DateTime
+                                                                  .parse(par[
+                                                                      'dataHora']))
+                                                              .toString())),
+                                                          DataCell(Container(
                                                               width: 25,
-                                                              child: IconButton(
-                                                                onPressed: () {
-                                                                  print(
-                                                                      "CLICOU NA ROW DO PAR ${par}");
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .push(new MaterialPageRoute<
-                                                                              Null>(
-                                                                          builder: (BuildContext
-                                                                              context) {
-                                                                            return new VerFormularioPage(
-                                                                              formulario: par,
-                                                                            );
-                                                                          },
-                                                                          fullscreenDialog:
-                                                                              true))
-                                                                      .then(
-                                                                          (_) {
-                                                                    //_initializeLocals();
-                                                                  });
-                                                                },
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .arrow_forward,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                ),
-                                                                iconSize: 20.0,
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ))
-                                                .toList()
-                                            : [],
-                                      )
-                                    : Container(
-                                        child: Text(
-                                            "Nenhum PAR preenchido ou salvo remotamente")),
+                                                              child: Text(par[
+                                                                      'soma']
+                                                                  .toString()))),
+                                                          DataCell(
+                                                            Container(
+                                                                width: 25,
+                                                                child:
+                                                                    IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    print(
+                                                                        "CLICOU NA ROW DO PAR ${par}");
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .push(new MaterialPageRoute<
+                                                                                Null>(
+                                                                            builder: (BuildContext
+                                                                                context) {
+                                                                              return new VerFormularioPage(
+                                                                                formulario: par,
+                                                                              );
+                                                                            },
+                                                                            fullscreenDialog:
+                                                                                true))
+                                                                        .then(
+                                                                            (_) {
+                                                                      //_initializeLocals();
+                                                                    });
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .arrow_forward,
+                                                                    color: Colors
+                                                                        .blue,
+                                                                  ),
+                                                                  iconSize:
+                                                                      20.0,
+                                                                )),
+                                                          ),
+                                                        ],
+                                                      ))
+                                                  .toList()
+                                              : [],
+                                        )
+                                      : Container(
+                                          child: Text(
+                                              "Nenhum PAR preenchido ou salvo remotamente"))
+                                ]),
                               ),
                               Container(
-                                child: (state.basalto_pars != null &&
-                                        state.basalto_pars.length > 0)
-                                    ? DataTable(
-                                        columnSpacing: 10,
-                                        columns: [
-                                          // DataColumn(label: Text("#")),
-                                          DataColumn(label: Text("Local")),
-                                          DataColumn(label: Text("Data")),
-                                          DataColumn(label: Text("Soma")),
-                                          DataColumn(label: Text("")),
-                                        ],
-                                        rows: state.basalto_pars != null
-                                            ? state.basalto_pars
-                                                .map((par) => DataRow(
-                                                      cells: [
-                                                        // DataCell(Text(par['id'].toString())),
-                                                        DataCell(Text(
-                                                            par['local']
-                                                                ['nome'])),
-                                                        DataCell(Text(new DateFormat(
-                                                                "dd/MM/yyyy")
-                                                            .format(DateTime
-                                                                .parse(par[
-                                                                    'dataHora']))
-                                                            .toString())),
-                                                        DataCell(Container(
-                                                            width: 25,
-                                                            child: Text(par[
-                                                                    'soma']
-                                                                .toString()))),
-                                                        DataCell(
-                                                          Container(
+                                child: Column(children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        exportPARsBasalto(state.basalto_pars);
+                                      },
+                                      child: Text("Exportar Todos",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
+                                  ),
+                                  (state.basalto_pars != null &&
+                                          state.basalto_pars.length > 0)
+                                      ? DataTable(
+                                          columnSpacing: 10,
+                                          columns: [
+                                            // DataColumn(label: Text("#")),
+                                            DataColumn(label: Text("Local")),
+                                            DataColumn(label: Text("Data")),
+                                            DataColumn(label: Text("Soma")),
+                                            DataColumn(label: Text("")),
+                                          ],
+                                          rows: state.basalto_pars != null
+                                              ? state.basalto_pars
+                                                  .map((par) => DataRow(
+                                                        cells: [
+                                                          // DataCell(Text(par['id'].toString())),
+                                                          DataCell(Text(
+                                                              par['local']
+                                                                  ['nome'])),
+                                                          DataCell(Text(new DateFormat(
+                                                                  "dd/MM/yyyy")
+                                                              .format(DateTime
+                                                                  .parse(par[
+                                                                      'dataHora']))
+                                                              .toString())),
+                                                          DataCell(Container(
                                                               width: 25,
-                                                              child: IconButton(
-                                                                onPressed: () {
-                                                                  print(
-                                                                      "CLICOU NA ROW DO PAR ${par}");
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .push(new MaterialPageRoute<
-                                                                              Null>(
-                                                                          builder: (BuildContext
-                                                                              context) {
-                                                                            return new VerFormularioBasaltoPage(
-                                                                              formulario: par,
-                                                                            );
-                                                                          },
-                                                                          fullscreenDialog:
-                                                                              true))
-                                                                      .then(
-                                                                          (_) {
-                                                                    //_initializeLocals();
-                                                                  });
-                                                                },
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .arrow_forward,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                ),
-                                                                iconSize: 20.0,
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ))
-                                                .toList()
-                                            : [],
-                                      )
-                                    : Container(
-                                        child: Text(
-                                            "Nenhum PAR preenchido ou salvo remotamente")),
+                                                              child: Text(par[
+                                                                      'soma']
+                                                                  .toString()))),
+                                                          DataCell(
+                                                            Container(
+                                                                width: 25,
+                                                                child:
+                                                                    IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    print(
+                                                                        "CLICOU NA ROW DO PAR ${par}");
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .push(new MaterialPageRoute<
+                                                                                Null>(
+                                                                            builder: (BuildContext
+                                                                                context) {
+                                                                              return new VerFormularioBasaltoPage(
+                                                                                formulario: par,
+                                                                              );
+                                                                            },
+                                                                            fullscreenDialog:
+                                                                                true))
+                                                                        .then(
+                                                                            (_) {
+                                                                      //_initializeLocals();
+                                                                    });
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .arrow_forward,
+                                                                    color: Colors
+                                                                        .blue,
+                                                                  ),
+                                                                  iconSize:
+                                                                      20.0,
+                                                                )),
+                                                          ),
+                                                        ],
+                                                      ))
+                                                  .toList()
+                                              : [],
+                                        )
+                                      : Container(
+                                          child: Text(
+                                              "Nenhum PAR preenchido ou salvo remotamente"))
+                                ]),
                               ),
                             ]),
                           ),

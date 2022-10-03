@@ -9,6 +9,7 @@ import 'package:BeraPAR/constants.dart';
 import 'package:BeraPAR/formulario/ficha_latitude_longitude.dart';
 import 'package:BeraPAR/formulario/ficha_local.dart';
 import 'package:BeraPAR/map/arbitrary_suggestion_type.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:BeraPAR/store/models/map_model.dart';
@@ -36,6 +37,7 @@ class _MapPageState extends State<MapPage> {
   GlobalKey key =
       new GlobalKey<AutoCompleteTextFieldState<ArbitrarySuggestionType>>();
   var textField;
+  bool loading = false;
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -229,9 +231,22 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _centerMap() async {
-    var currentPosition = await _determinePosition();
-    mapController.move(
-        new LatLng(currentPosition.latitude, currentPosition.longitude), 15);
+    setState(() {
+      loading = true;
+    });
+    try {
+      var currentPosition = await _determinePosition();
+      mapController.move(
+          new LatLng(currentPosition.latitude, currentPosition.longitude), 15);
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   void _handleOnTap(LatLng point) {
@@ -322,7 +337,17 @@ class _MapPageState extends State<MapPage> {
                 margin: EdgeInsets.only(top: 15, left: 5, right: 5),
                 padding: EdgeInsets.all(4),
                 child: textField,
-              )
+              ),
+              loading
+                  ? Positioned(
+                      bottom: 0.0,
+                      right: 0.0,
+                      left: 0.0,
+                      child: SpinKitRing(
+                        color: kPrimaryColor,
+                        size: 50.0,
+                      ))
+                  : Container()
             ],
           );
         });

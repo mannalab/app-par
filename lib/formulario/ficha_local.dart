@@ -79,21 +79,22 @@ class _FormularioLocalWidgetState extends State<FormularioLocalWidget> {
                   controller: descricao_local,
                   decoration: InputDecoration(labelText: 'Descrição:'),
                 ),
-                Container(padding: EdgeInsets.only(top: 10)),
-                Text("Tipo de Instituição"),
-                RadioButtonGroup(
-                  labels: [
-                    "Pública",
-                    "Privada",
-                  ],
-                  // onChange: (String label, int index) =>
-                  //     print("label: $label index: $index"),
-                  onSelected: (String label) {
-                    setState(() {
-                      tipo_instituicao = label;
-                    });
-                  },
-                ),
+                // Container(padding: EdgeInsets.only(top: 10)),
+                // Text("Objetivo da Utilização"),
+                // RadioButtonGroup(
+                //   labels: [
+                //     "Pesquisa",
+                //     "Ensino",
+                //     "Extensão",
+                //   ],
+                //   // onChange: (String label, int index) =>
+                //   //     print("label: $label index: $index"),
+                //   onSelected: (String label) {
+                //     setState(() {
+                //       tipo_instituicao = label;
+                //     });
+                //   },
+                // ),
                 TextFormField(
                   controller: nome_instituicao,
                   decoration:
